@@ -1,28 +1,20 @@
 import json
-import tornado.ioloop
-import tornado.web
-import pymysql
-import config
+from PTConnectionPool import getPTConnection
 
 
 class Poems():
     reque_count = 1
 
-    def __init__(self):
-        self.db = pymysql.connect(config.HOST, config.USERNAME, config.PASSWORD, config.DATABASENAME)
-        self.cursor = self.db.cursor()
-
     def getPoems(self, sum=10):
-        poetry_totals = self.cursor.execute('select * from poetry')
-        if self.reque_count * sum > poetry_totals:
-            self.reque_count = 1
+        with getPTConnection() as db:
+            poetry_totals = db.cursor.execute('select * from poetry')
+            if self.reque_count * sum > poetry_totals:
+                self.reque_count = 1
 
-        sql = 'select * from poetry limit ' + str((self.reque_count - 1) * sum) + ',' + str(sum)
-        self.cursor.execute(sql)
-        poems = self.changeJson(self.cursor.fetchall())
-
-        self.reque_count += 1
-
+            sql = 'select * from poetry limit ' + str((self.reque_count - 1) * sum) + ',' + str(sum)
+            db.cursor.execute(sql)
+            poems = self.changeJson(db.cursor.fetchall())
+            self.reque_count += 1
         return poems
 
     def changeJson(self, data):
@@ -55,23 +47,3 @@ class Poems():
             result['LikeTotal'] = row[9]
             jsonDt.append(result)
         return json.dumps(jsonDt, ensure_ascii=False)
-
-
-class PoemsHandler(tornado.web.RequestHandler):
-    poems = Poems()
-
-    def get(self):
-        sum = int(self.get_argument("poems_sum"))
-        self.write(self.poems.getPoems(sum))
-
-
-def make_app():
-    return tornado.web.Application([
-        (r"/", PoemsHandler),
-    ])
-
-
-if __name__ == "__main__":
-    app = make_app()
-    app.listen(8888)
-    tornado.ioloop.IOLoop.current().start()

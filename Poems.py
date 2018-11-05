@@ -7,16 +7,16 @@ import random
 class Poems:
     dateTimeDay = datetime.datetime.now().day
 
-    def getPoems(self, poems_index=0):
+    def getPoems(self, poems_index=1):
 
         with getPTConnection() as db:
             poetry_totals = db.cursor.execute('select * from poetry')
             if datetime.datetime.now().day - self.dateTimeDay >= 1:
                 self.dateTimeDay = datetime.datetime.now().day
-                baseIndex = random.randint(0, poetry_totals // 10)
+                baseIndex = random.randint(1, poetry_totals // 10)
                 poems_index += baseIndex
-            if 10 * poems_index > poetry_totals:
-                poems_index = 0
+            if 10 * poems_index > poetry_totals or poems_index < 1:
+                poems_index = 1
 
             sql = 'select * from poetry limit ' + str((poems_index - 1) * 10) + ',' + str(10)
             db.cursor.execute(sql)

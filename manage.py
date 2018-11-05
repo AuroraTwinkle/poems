@@ -7,8 +7,8 @@ class PoemsHandler(tornado.web.RequestHandler):
     poems = Poems()
 
     def get(self):
-        sum = int(self.get_argument("poems_sum"))
-        self.write(self.poems.getPoems(sum))
+        poems_index = int(self.get_argument("poems_index"))
+        self.write(self.poems.getPoems(poems_index))
 
 
 def make_app():

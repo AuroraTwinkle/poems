@@ -1,20 +1,26 @@
 import json
 from PTConnectionPool import getPTConnection
+import datetime
+import random
 
 
-class Poems():
-    reque_count = 1
+class Poems:
+    dateTimeDay = datetime.datetime.now().day
 
-    def getPoems(self, sum=10):
+    def getPoems(self, poems_index=0):
+
         with getPTConnection() as db:
             poetry_totals = db.cursor.execute('select * from poetry')
-            if self.reque_count * sum > poetry_totals:
-                self.reque_count = 1
+            if datetime.datetime.now().day - self.dateTimeDay >= 1:
+                self.dateTimeDay = datetime.datetime.now().day
+                baseIndex = random.randint(0, poetry_totals // 10)
+                poems_index += baseIndex
+            if 10 * poems_index > poetry_totals:
+                poems_index = 0
 
-            sql = 'select * from poetry limit ' + str((self.reque_count - 1) * sum) + ',' + str(sum)
+            sql = 'select * from poetry limit ' + str((poems_index - 1) * 10) + ',' + str(10)
             db.cursor.execute(sql)
             poems = self.changeJson(db.cursor.fetchall())
-            self.reque_count += 1
         return poems
 
     def changeJson(self, data):
@@ -32,7 +38,6 @@ class Poems():
                 with open(row[3], 'r', encoding='UTF-8') as f:
                     poery = f.read()
                     result['Poetry'] = poery
-            result['ReportNum'] = row[4]
             if row[6] != '':
                 with open(row[6], 'r', encoding='UTF-8') as f:
                     translate = f.read()

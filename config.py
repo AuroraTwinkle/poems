@@ -23,4 +23,4 @@ DB_BLOCKING = True
 DB_MAX_USAGE = 0
 
 # setsession : 一个可选的SQL命令列表用于准备每个会话，如["set datestyle to german", ...]
-DB_SET_SESSION = None
+DB_SET_SESSION = ['SET AUTOCOMMIT = 1']

@@ -11,6 +11,9 @@ class PoemsHandler(tornado.web.RequestHandler):
         self.write(self.poems.getPoems(poems_index))
 
 
+class UserHandler(tornado.web.RequestHandler):
+    poems=Poems()
+
 def make_app():
     return tornado.web.Application([
         (r"/poems", PoemsHandler),

@@ -1,6 +1,6 @@
 import tornado.ioloop
 import tornado.web
-from Poems import Poems
+from app.main.Poems import Poems
 
 
 class PoemsHandler(tornado.web.RequestHandler):

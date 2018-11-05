@@ -13,8 +13,8 @@ class Poems:
             poetry_totals = db.cursor.execute('select * from poetry')
             if datetime.datetime.now().day - self.dateTimeDay >= 1:
                 self.dateTimeDay = datetime.datetime.now().day
-                baseIndex = random.randint(1, poetry_totals // 10)
-                poems_index += baseIndex
+                base_index = random.randint(1, poetry_totals // 10)
+                poems_index += base_index
             if 10 * poems_index > poetry_totals or poems_index < 1:
                 poems_index = 1
 
@@ -24,10 +24,9 @@ class Poems:
         return poems
 
     def changeJson(self, data):
-        jsonDt = []
+        json_dt = []
         for row in data:
-            result = {}
-            result['Title'] = row[0]
+            result = {'Title': row[0]}
             if row[1] != '':
                 with open(row[1], 'r', encoding='UTF-8') as f:
                     note = f.read()
@@ -50,5 +49,5 @@ class Poems:
                     result['shangxi'] = shangxi
 
             result['LikeTotal'] = row[9]
-            jsonDt.append(result)
-        return json.dumps(jsonDt, ensure_ascii=False)
+            json_dt.append(result)
+        return json.dumps(json_dt, ensure_ascii=False)

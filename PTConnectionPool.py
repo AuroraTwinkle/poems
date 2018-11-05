@@ -2,7 +2,6 @@ import pymysql
 from DBUtils.PooledDB import PooledDB
 import config as Config
 
-
 class PTConnectionPool(object):
     __pool = None
 

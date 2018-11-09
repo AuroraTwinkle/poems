@@ -17,3 +17,10 @@ class User:
         sql = "select * from user where user.id=%s" % mail_id
         with getPTConnection() as db:
             return db.cursor.execute(sql)
+
+    def alterProfile(self, mail_id, user_name, user_avatar):
+        if not self.searchMail(mail_id):
+            return False
+        sql = "update user set user.Name=%s,user.Photo=%s where user.id=%s" % (user_name, user_avatar, mail_id)
+        with getPTConnection() as db:
+            return db.cursor.execute(sql)

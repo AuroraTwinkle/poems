@@ -19,10 +19,7 @@ class RegisterUserHandler(tornado.web.RequestHandler):
 
     def get(self):
         user_mail = self.get_argument('user_mail')
-        if self.user.searchMail(user_mail):
-            self.write("True")
-        else:
-            self.write("False")
+        self.write(self.user.searchMail(user_mail))
 
     def post(self):
         user_mail = self.get_argument('user_mail')

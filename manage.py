@@ -29,10 +29,7 @@ class RegisterUserHandler(tornado.web.RequestHandler):
                      'BanTime': now_time,
                      'Banned': None, 'Photo': None, 'VoiceNum': 0, 'FavoritesNum': 0, 'EssayNum': 0, 'PoetryNum': 0,
                      'Vip': 0, 'VipTime': now_time}
-        if self.user.registerUser(info_json):
-            self.write("True")
-        else:
-            self.write("False")
+        self.write(self.user.registerUser(info_json))
 
 class AlterProfileHandler(tornado.web.RequestHandler):
     user = User()

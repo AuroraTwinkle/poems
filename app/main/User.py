@@ -5,6 +5,7 @@ import json
 class User:
     def registerUser(self, info_json):
         status_code = self.searchMail(info_json["id"])
+        status_code = json.loads(status_code)
         if status_code["status"]:
             return json.dumps({"status": False, "message": "Fail to register,The mail has existed!"},
                               ensure_ascii=False)
@@ -31,6 +32,7 @@ class User:
 
     def alterProfile(self, mail_id, user_name, user_avatar):
         status_code = self.searchMail(mail_id)
+        status_code = json.loads(status_code)
         if not status_code["status"]:
             return json.dumps({"status": False, "message": "Fail to alter,The mail has not existed!"},
                               ensure_ascii=False)

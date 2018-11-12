@@ -4,8 +4,10 @@ import json
 
 class User:
     def registerUser(self, info_json):
-        if self.searchMail(info_json["id"]):
-            return json.dumps({"status": False, "message": "The mail has existed!"}, ensure_ascii=False)
+        status_code = self.searchMail(info_json["id"])
+        if status_code["status"]:
+            return json.dumps({"status": False, "message": "Fail to register,The mail has existed!"},
+                              ensure_ascii=False)
         sql = "insert into user (Name,Ban,id,ReportNum,Password,BanTime,Banned,Photo,VoiceNum,FavoritesNum,EssayNum,PoetryNum,Vip,VipTime) " \
               "values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (
                   info_json["Name"], info_json["Ban"], info_json["id"],

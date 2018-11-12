@@ -30,8 +30,10 @@ class User:
                 return json.dumps({"status": False, "message": "The mail has not existed!"}, ensure_ascii=False)
 
     def alterProfile(self, mail_id, user_name, user_avatar):
-        if not self.searchMail(mail_id):
-            return json.dumps({"status": False, "message": "The mail has not existed!"}, ensure_ascii=False)
+        status_code = self.searchMail(mail_id)
+        if not status_code["status"]:
+            return json.dumps({"status": False, "message": "Fail to alter,The mail has not existed!"},
+                              ensure_ascii=False)
         sql = "update user set user.Name=%s,user.Photo=%s where user.id=%s" % (user_name, user_avatar, mail_id)
         with getPTConnection() as db:
             if db.cursor.execute(sql):

@@ -25,7 +25,7 @@ class RegisterUserHandler(tornado.web.RequestHandler):
         user_mail = self.get_argument('user_mail')
         user_password = self.get_argument('user_password')
         now_time = datetime.now()
-        info_json = {"Name": "青莲居士", 'Ban': 0, 'id': user_mail, 'ReportNum': 0, 'Password': user_password,
+        info_json = {'Name': "青莲居士", 'Ban': 0, 'id': user_mail, 'ReportNum': 0, 'Password': user_password,
                      'BanTime': now_time,
                      'Banned': None, 'Photo': None, 'VoiceNum': 0, 'FavoritesNum': 0, 'EssayNum': 0, 'PoetryNum': 0,
                      'Vip': 0, 'VipTime': now_time}

@@ -45,6 +45,11 @@ class User:
                 return json.dumps({"status": False, "message": "Alter Failed!"}, ensure_ascii=False)
 
     def getProfile(self, mail_id):
+        status_code = self.searchMail(mail_id)
+        status_code = json.loads(status_code)
+        if not status_code["status"]:
+            return json.dumps({"status": False, "message": "Fail to get profile,The mail has not existed!"},
+                              ensure_ascii=False)
         sql = "select Name,Photo from user where user.id='%s'" % mail_id
         with getPTConnection() as db:
             db.cursor.execute(sql)
@@ -52,4 +57,5 @@ class User:
             user_info = {'user_name': profile[0]}
             avatar_path = profile[1].replace('/', '\\')
             user_info['user_avatar'] = avatar_path
-            return json.dumps(user_info,ensure_ascii=False)
+            user_info['status'] = True
+            return json.dumps(user_info, ensure_ascii=False)

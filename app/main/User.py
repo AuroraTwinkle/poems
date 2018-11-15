@@ -36,9 +36,20 @@ class User:
         if not status_code["status"]:
             return json.dumps({"status": False, "message": "Fail to alter,The mail has not existed!"},
                               ensure_ascii=False)
-        sql = "update user set user.Name=%s,user.Photo=%s where user.id=%s" % (user_name, user_avatar, mail_id)
+        user_avatar = user_avatar.replace('\\', '/')
+        sql = "update user set user.Name='%s',user.Photo='%s' where user.id='%s'" % (user_name, user_avatar, mail_id)
         with getPTConnection() as db:
             if db.cursor.execute(sql):
                 return json.dumps({"status": True, "message": "Alter Successful!"}, ensure_ascii=False)
             else:
                 return json.dumps({"status": False, "message": "Alter Failed!"}, ensure_ascii=False)
+
+    def getProfile(self, mail_id):
+        sql = "select Name,Photo from user where user.id='%s'" % mail_id
+        with getPTConnection() as db:
+            db.cursor.execute(sql)
+            profile = db.cursor.fetchone()
+            user_info = {'user_name': profile[0]}
+            avatar_path = profile[1].replace('/', '\\')
+            user_info['user_avatar'] = avatar_path
+            return json.dumps(user_info,ensure_ascii=False)

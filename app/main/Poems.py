@@ -3,9 +3,30 @@ from PTConnectionPool import getPTConnection
 import datetime
 import random
 
+from app.main.User import User
+
 
 class Poems:
     dateTimeDay = datetime.datetime.now().day
+
+    def addPoem(self, info_json):
+        user = User()
+        status_code = user.searchMail(info_json["Uploader"])
+        status_code = json.loads(status_code)
+        if not status_code["status"]:
+            return json.dumps({"status": False, "message": "Fail to add poem,The mail has not existed!"},
+                              ensure_ascii=False)
+        sql = "insert into poetry (Title,Note,Editor,Path,ReportNum,Uploader,Translate,Dynasty,shangxi,LikeTotal)" \
+              "values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (
+                  info_json["Title"], info_json["Note"], info_json["Editor"],
+                  info_json["Path"], info_json["ReportNum"], info_json["Uploader"],
+                  info_json["Translate"], info_json["Dynasty"], info_json["shangxi"],
+                  info_json["LikeTotal"])
+        with getPTConnection() as db:
+            if db.cursor.execute(sql):
+                return json.dumps({"status": True, "message": "successful to upload poem!"}, ensure_ascii=False)
+            else:
+                return json.dumps({"status": False, "message": "fail to upload poem!"}, ensure_ascii=False)
 
     def getPoems(self, poems_index=1):
 

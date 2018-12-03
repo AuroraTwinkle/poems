@@ -5,6 +5,15 @@ from app.main.Poems import Poems
 from app.main.User import User
 
 
+class LoginHandler(tornado.web.RequestHandler):
+    user = User()
+
+    def post(self):
+        mail_id = self.get_argument('mail_id')
+        password = self.get_argument('password')
+        self.write(self.user.login(mail_id, password))
+
+
 class SelectPoemsHandler(tornado.web.RequestHandler):
     poems = Poems()
 
@@ -12,6 +21,31 @@ class SelectPoemsHandler(tornado.web.RequestHandler):
         self.set_header('content-type', 'application/json')
         poems_index = int(self.get_argument("poems_index"))
         self.write(self.poems.getPoems(poems_index))
+
+    def post(self):
+        poem_info = {}
+        poem_info['Title'] = self.get_argument("poem_title")
+        poem_info['Editor'] = self.get_argument("poem_editor")
+        poem_info['Uploader'] = self.get_argument("poem_uploader")
+        poem_info['Dynasty'] = self.get_argument("poem_dynasty")
+        poem_info['Note'] = ''
+        poem_info['ReportNum'] = 0
+        poem_info['Translate'] = ''
+        poem_info['shangxi'] = ''
+        poem_info['LikeTotal'] = 0
+        poem_files = self.request.files['poem']
+        for poem in poem_files:
+            file_name = poem['filename']
+            import os
+            if not os.path.exists('C:\古诗词\诗歌内容'):
+                os.makedirs('C:\古诗词\诗歌内容')
+            import uuid
+            uuid_str = uuid.uuid1()
+            poem_path = ('''C:\古诗词\诗歌内容\\''' + '%s' + file_name) % uuid_str
+            with open(poem_path, 'wb') as up:
+                up.write(poem['body'])
+            poem_info['Path'] = poem_path
+            self.write(self.poems.addPoem(poem_info))
 
 
 class RegisterUserHandler(tornado.web.RequestHandler):
@@ -71,6 +105,7 @@ def make_app():
         (r"/register", RegisterUserHandler),
         (r"/alterOrGetProfile", AlterProfileHandler),
         (r"/getAvatar", UploadPhotoHandler),
+        (r"/login", LoginHandler),
     ])
 
 

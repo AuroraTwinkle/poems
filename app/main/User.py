@@ -59,3 +59,22 @@ class User:
             user_info['user_avatar'] = avatar_path
             user_info['status'] = True
             return json.dumps(user_info, ensure_ascii=False)
+
+    def login(self, mail_id, password):
+        status_code = self.searchMail(mail_id)
+        status_code = json.loads(status_code)
+        if not status_code["status"]:
+            return json.dumps({"status": False, "message": "Fail to login,The mail has not existed!"},
+                              ensure_ascii=False)
+        sql = "select Name,Photo ,Password from user where user.id='%s'" % mail_id
+        with getPTConnection() as db:
+            db.cursor.execute(sql)
+            profile = db.cursor.fetchone()
+            if profile[2] != password:
+                return json.dumps({"status": False, "message": "Fail to login,The password is wrong!"},
+                                  ensure_ascii=False)
+            user_info = {'user_name': profile[0]}
+            avatar_path = profile[1].replace('/', '\\')
+            user_info['user_avatar'] = avatar_path
+            user_info['status'] = True
+            return json.dumps(user_info, ensure_ascii=False)

@@ -50,6 +50,11 @@ class Poems:
         json_dt = []
         for row in data:
             result = {'Title': row[0]}
+            sql = "select Photo from user where id=%s" % row[5]
+            with getPTConnection() as db:
+                db.cursor.execute(sql)
+                photo = db.cursor.fetchall()
+                result['user_avatar'] = photo
             if row[1] != '':
                 with open(row[1], 'r', encoding='UTF-8') as f:
                     note = f.read()

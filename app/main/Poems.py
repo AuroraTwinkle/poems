@@ -56,7 +56,7 @@ class Poems:
                 photo = db.cursor.fetchone()
                 result['user_avatar'] = '0'
                 if photo[0] != '':
-                    result['user_avatar'] = photo[0]
+                    result['user_avatar'] = photo[0].replace('/', '\\')
 
 
             if row[1] != '':

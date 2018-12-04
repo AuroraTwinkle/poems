@@ -54,7 +54,11 @@ class Poems:
             with getPTConnection() as db:
                 db.cursor.execute(sql)
                 photo = db.cursor.fetchone()
-                result['user_avatar'] = photo[0]
+                result['user_avatar'] = '0'
+                if photo[0] != '':
+                    result['user_avatar'] = photo[0]
+
+
             if row[1] != '':
                 with open(row[1], 'r', encoding='UTF-8') as f:
                     note = f.read()

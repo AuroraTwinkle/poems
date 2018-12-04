@@ -16,10 +16,12 @@ class Poems:
         if not status_code["status"]:
             return json.dumps({"status": False, "message": "Fail to add poem,The mail has not existed!"},
                               ensure_ascii=False)
+        poem_path = info_json["Path"]
+        poem_path = poem_path.replace('\\', '/')
         sql = "insert into poetry (Title,Note,Editor,Path,ReportNum,Uploader,Translate,Dynasty,shangxi,LikeTotal)" \
               "values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (
                   info_json["Title"], info_json["Note"], info_json["Editor"],
-                  info_json["Path"], info_json["ReportNum"], info_json["Uploader"],
+                  poem_path, info_json["ReportNum"], info_json["Uploader"],
                   info_json["Translate"], info_json["Dynasty"], info_json["shangxi"],
                   info_json["LikeTotal"])
         with getPTConnection() as db:
@@ -55,7 +57,9 @@ class Poems:
 
             result['Editor'] = row[2]
             if row[3] != '':
-                with open(row[3], 'r', encoding='UTF-8') as f:
+                path_poem = row[3]
+                path_poem = path_poem.replace('/', '\\')
+                with open(path_poem, 'r', encoding='UTF-8') as f:
                     poery = f.read()
                     result['Poetry'] = poery
             if row[6] != '':

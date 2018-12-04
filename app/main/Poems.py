@@ -50,7 +50,7 @@ class Poems:
         json_dt = []
         for row in data:
             result = {'Title': row[0]}
-            sql = "select Photo from user where id=%s" % row[5]
+            sql = "select Photo from user where id='%s'" % row[5]
             with getPTConnection() as db:
                 db.cursor.execute(sql)
                 photo = db.cursor.fetchone()
